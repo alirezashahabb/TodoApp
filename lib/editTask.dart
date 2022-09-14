@@ -14,7 +14,9 @@ class EditTaskScreen extends StatefulWidget {
 
 class _EditTaskScreenState extends State<EditTaskScreen> {
   //grftan va zakhire on roye DataBAse
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller =
+  //=========================================================>>>> zamani ke in text fild load shod ma dakhelesh esm task mizarim
+      TextEditingController(text: widget.task.name);
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +26,18 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            //===================================================================================>>>>> Zakhire task ha
-            final task = TaskEntity();
-            task.name = _controller.text;
-            task.priority = Priority.low;
+           /// ahmiyat dadn be tghir task ha 
+            widget.task.name = _controller.text;
+            //==================================================================entkhabl rang ovlaviat karbar
+            widget.task.priority = widget.task.priority;
             // cheack krdn task ha dakhel box
-            if (task.isInBox) {
-              task.save();
+            if (widget.task.isInBox) {
+               //===================================================================================>>>>> Zakhire task ha
+
+              widget.task.save();
             } else {
               final box = Hive.box(taskBoxName);
-              box.add(task);
+              box.add(widget.task);
             }
             Navigator.of(context).pop();
           },
@@ -81,7 +85,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         });
                       },
                       labale: 'Hight',
-                      color: primaryColor,
+                      color: hightPrioritycolor,
                       isSeleceted: widget.task.priority == Priority.hight,
                     )),
                 const SizedBox(
@@ -96,7 +100,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         });
                       },
                       labale: 'Normal',
-                      color: Colors.orange,
+                      color: naromalPrioritycolor,
                       isSeleceted: widget.task.priority == Priority.normal,
                     )),
                 const SizedBox(
@@ -111,20 +115,17 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                         });
                       },
                       labale: 'Low',
-                      color: const Color(0xff3be1f1),
+                      color: lowPrioritycolor,
                       isSeleceted: widget.task.priority == Priority.low,
                     )),
               ],
             ),
             TextField(
                 controller: _controller,
-                decoration:
-                 InputDecoration(label: Text('add Task for Today...',
-                    style: themeData.textTheme.bodyText2!.apply(
-                      fontSizeFactor: 1.4
-                    )
-                    
-                    )))
+                decoration: InputDecoration(
+                    label: Text('add Task for Today...',
+                        style: themeData.textTheme.bodyText2!
+                            .apply(fontSizeFactor: 1.4))))
           ],
         ),
       ),

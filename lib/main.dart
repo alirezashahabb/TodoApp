@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo/data.dart';
-import 'package:todo/date.dart';
+
+import 'package:todo/editTask.dart';
 
 const taskBoxName = 'tasks';
 
@@ -28,6 +29,9 @@ void main() async {
 const Color primaryColor = Color(0xff794cff);
 const Color primaryContiner = Color(0xff5c0aff);
 const Color secondrTextColor = Color(0xffafbed0);
+const Color naromalPrioritycolor = Colors.orange;
+const Color lowPrioritycolor = Color(0xff3be1f1);
+const hightPrioritycolor = primaryColor;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -85,8 +89,10 @@ class MyHomePage extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => EditTaskScreen(task: TaskEntity(),)));
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => EditTaskScreen(
+                      task: TaskEntity(),
+                    )));
           },
           label: Row(
             children: [
@@ -238,7 +244,6 @@ class MyHomePage extends StatelessWidget {
 
 /// sakht safhe EditTask jajaht Ezafe krdn Task ha be app
 
-
 /// item haye marbot be task
 class TaskItem extends StatefulWidget {
   const TaskItem({
@@ -256,16 +261,28 @@ class _TaskItemState extends State<TaskItem> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
+    final Color priorityColor;
+
+    switch (widget.task.priority) {
+      case Priority.low:
+        priorityColor = lowPrioritycolor;
+        break;
+      case Priority.normal:
+        priorityColor = naromalPrioritycolor;
+        break;
+      case Priority.hight:
+        priorityColor = hightPrioritycolor;
+        break;
+    }
     return InkWell(
       onTap: () {
-        //======================================================================>>>>>>>>>>>>>>>>>>>>>vaghti vaziat State avaz shod
-        setState(() {
-          widget.task.isComplet = !widget.task.isComplet;
-        });
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => EditTaskScreen(task: widget.task),
+        ));
       },
       child: Container(
           margin: const EdgeInsets.only(top: 12),
-          padding: const EdgeInsets.only(right: 16, left: 16),
+          padding: const EdgeInsets.only(left: 16),
           height: 84,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
@@ -280,20 +297,39 @@ class _TaskItemState extends State<TaskItem> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               //====================================================================>>>>>>>>>>>>>>>>>>cheack box custom
-              MycheackBox(value: widget.task.isComplet),
+              MycheackBox(
+                value: widget.task.isComplet,
+                onTap: () {
+                 setState(() {
+                    widget.task.isComplet = !widget.task.isComplet;
+                 });
+                },
+              ),
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
                   widget.task.name,
+                  maxLines: 1,
                   style: TextStyle(
                     overflow: TextOverflow.ellipsis,
-                    fontSize: 22,
+                  
                     decoration: widget.task.isComplet
                         ? TextDecoration.lineThrough
                         : null,
                   ),
                 ),
               ),
+
+              Container(
+                width: 5,
+                height: 84,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8)),
+                  color: priorityColor,
+                ),
+              )
             ],
           )),
     );
@@ -303,25 +339,30 @@ class _TaskItemState extends State<TaskItem> {
 /// Craet Custom Cheack box for tasks
 class MycheackBox extends StatelessWidget {
   final bool value;
-  const MycheackBox({super.key, required this.value});
+  final Function() onTap;
+  const MycheackBox({super.key, required this.value, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final ThemeData themeData = Theme.of(context);
-    return Container(
-      height: 20,
-      width: 20,
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: !value ? Border.all(color: secondrTextColor, width: 2) : null,
-          color: value ? primaryColor : null),
-      child: value
-          ? Icon(
-              CupertinoIcons.check_mark,
-              color: themeData.colorScheme.onPrimary,
-              size: 15,
-            )
-          : null,
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 20,
+        width: 20,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border:
+                !value ? Border.all(color: secondrTextColor, width: 2) : null,
+            color: value ? primaryColor : null),
+        child: value
+            ? Icon(
+                CupertinoIcons.check_mark,
+                color: themeData.colorScheme.onPrimary,
+                size: 15,
+              )
+            : null,
+      ),
     );
   }
 }
