@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:todo/data.dart';
@@ -179,59 +180,67 @@ class MyHomePage extends StatelessWidget {
                 // ==============================================>>>>>>>>>>>>>>>> be chi mikhy gosh bdi ta taghit kni
                 valueListenable: box.listenable(),
                 builder: (context, box, child) {
-                  return ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                  if (box.isNotEmpty) {
+                    return ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
 
-                    /// be eza  value<mghadir> dakhel box ya dataBase
-                    itemCount: box.values.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 0) {
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Today',
-                                  style: themeData.textTheme.headline6!
-                                      .copyWith(
-                                          color: Colors.black, fontSize: 18),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(top: 4),
-                                  width: 60,
-                                  height: 3,
-                                  decoration: BoxDecoration(
-                                      color: primaryColor,
-                                      borderRadius: BorderRadius.circular(3)),
-                                )
-                              ],
-                            ),
-                            MaterialButton(
-                                elevation: 0,
-                                textColor: secondrTextColor,
-                                color: const Color(0xffeaeff5),
-                                onPressed: () {},
-                                child: Row(
-                                  children: const [
-                                    Text('Deleted All'),
-                                    SizedBox(width: 4),
-                                    Icon(
-                                      CupertinoIcons.delete_solid,
-                                      size: 18,
-                                    )
-                                  ],
-                                ))
-                          ],
-                        );
-                      } else {
-                        /// chon Values Iterable bod bayd az to list estfade konim
-                        final TaskEntity task = box.values.toList()[index - 1];
-                        return TaskItem(task: task);
-                      }
-                    },
-                  );
+                      /// be eza  value<mghadir> dakhel box ya dataBase
+                      itemCount: box.values.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Today',
+                                    style: themeData.textTheme.headline6!
+                                        .copyWith(
+                                            color: Colors.black, fontSize: 18),
+                                  ),
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 4),
+                                    width: 60,
+                                    height: 3,
+                                    decoration: BoxDecoration(
+                                        color: primaryColor,
+                                        borderRadius: BorderRadius.circular(3)),
+                                  )
+                                ],
+                              ),
+                              MaterialButton(
+                                  elevation: 0,
+                                  textColor: secondrTextColor,
+                                  color: const Color(0xffeaeff5),
+                                  onPressed: () {
+                                    //======================================>>>>>> paksazi kol box ha
+                                    box.clear();
+                                  },
+                                  child: Row(
+                                    children: const [
+                                      Text('Deleted All'),
+                                      SizedBox(width: 4),
+                                      Icon(
+                                        CupertinoIcons.delete_solid,
+                                        size: 18,
+                                      )
+                                    ],
+                                  ))
+                            ],
+                          );
+                        } else {
+                          /// chon Values Iterable bod bayd az to list estfade konim
+                          final TaskEntity task =
+                              box.values.toList()[index - 1];
+                          return TaskItem(task: task);
+                        }
+                      },
+                    );
+                  } else {
+                    return const EmpttyState();
+                  }
                 },
               ),
             ),
@@ -280,6 +289,11 @@ class _TaskItemState extends State<TaskItem> {
           builder: (context) => EditTaskScreen(task: widget.task),
         ));
       },
+
+      /// ====================================>>>>>> hazf krdn task ha 
+      onLongPress: () {
+        widget.task.delete();
+      },
       child: Container(
           margin: const EdgeInsets.only(top: 12),
           padding: const EdgeInsets.only(left: 16),
@@ -300,9 +314,9 @@ class _TaskItemState extends State<TaskItem> {
               MycheackBox(
                 value: widget.task.isComplet,
                 onTap: () {
-                 setState(() {
+                  setState(() {
                     widget.task.isComplet = !widget.task.isComplet;
-                 });
+                  });
                 },
               ),
               const SizedBox(width: 6),
@@ -312,7 +326,6 @@ class _TaskItemState extends State<TaskItem> {
                   maxLines: 1,
                   style: TextStyle(
                     overflow: TextOverflow.ellipsis,
-                  
                     decoration: widget.task.isComplet
                         ? TextDecoration.lineThrough
                         : null,
@@ -366,3 +379,27 @@ class MycheackBox extends StatelessWidget {
     );
   }
 }
+
+///=============================================================================>>>>Creat Empty State screen
+
+class EmpttyState extends StatelessWidget {
+  const EmpttyState({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SvgPicture.asset(
+          'assets/img/empty_state.svg',
+          height: 200,
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        const Text('Your task list is Empty')
+      ],
+    );
+  }
+}
+ 
