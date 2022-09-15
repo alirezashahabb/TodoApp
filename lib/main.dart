@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           inputDecorationTheme: const InputDecorationTheme(
             border: InputBorder.none,
+            floatingLabelBehavior: FloatingLabelBehavior.never,
             labelStyle: TextStyle(color: secondrTextColor),
             iconColor: secondrTextColor,
           ),
@@ -78,8 +79,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -165,8 +173,12 @@ class MyHomePage extends StatelessWidget {
                               blurRadius: 10,
                             )
                           ]),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                        controller: controller,
+                        decoration: const InputDecoration(
                             prefixIcon: Icon(CupertinoIcons.search),
                             label: Text('Search for task,,,')),
                       ),
@@ -180,12 +192,19 @@ class MyHomePage extends StatelessWidget {
                 // ==============================================>>>>>>>>>>>>>>>> be chi mikhy gosh bdi ta taghit kni
                 valueListenable: box.listenable(),
                 builder: (context, box, child) {
-                  if (box.isNotEmpty) {
+                  final items;
+                  if (controller.text.isEmpty) {
+                    items = box.values.toList();
+                  } else {
+                    items = box.values
+                        .where((task) => task.name.contains(controller.text)).toList();
+                  }
+                  if (items.isNotEmpty) {
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
 
                       /// be eza  value<mghadir> dakhel box ya dataBase
-                      itemCount: box.values.length + 1,
+                      itemCount: items.length + 1,
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return Row(
@@ -233,7 +252,7 @@ class MyHomePage extends StatelessWidget {
                         } else {
                           /// chon Values Iterable bod bayd az to list estfade konim
                           final TaskEntity task =
-                              box.values.toList()[index - 1];
+                            items[index - 1];
                           return TaskItem(task: task);
                         }
                       },
@@ -290,7 +309,7 @@ class _TaskItemState extends State<TaskItem> {
         ));
       },
 
-      /// ====================================>>>>>> hazf krdn task ha 
+      /// ====================================>>>>>> hazf krdn task ha
       onLongPress: () {
         widget.task.delete();
       },
@@ -402,4 +421,3 @@ class EmpttyState extends StatelessWidget {
     );
   }
 }
- 
