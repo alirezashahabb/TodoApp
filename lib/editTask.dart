@@ -15,7 +15,7 @@ class EditTaskScreen extends StatefulWidget {
 class _EditTaskScreenState extends State<EditTaskScreen> {
   //grftan va zakhire on roye DataBAse
   late final TextEditingController _controller =
-  //=========================================================>>>> zamani ke in text fild load shod ma dakhelesh esm task mizarim
+ 
       TextEditingController(text: widget.task.name);
 
   @override
@@ -28,12 +28,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           onPressed: () {
            /// ahmiyat dadn be tghir task ha 
             widget.task.name = _controller.text;
-            //==================================================================entkhabl rang ovlaviat karbar
+           
             widget.task.priority = widget.task.priority;
             // cheack krdn task ha dakhel box
             if (widget.task.isInBox) {
-               //===================================================================================>>>>> Zakhire task ha
-
               widget.task.save();
             } else {
               final box = Hive.box(taskBoxName);
@@ -65,7 +63,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         elevation: 0,
         backgroundColor: themeData.colorScheme.surface,
 
-        ///==================================================================>>>>> om chizi ke roye background gharar migirad
+    
         foregroundColor: themeData.colorScheme.onSurface,
         title: const Text('EditTasks'),
       ),
@@ -133,7 +131,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   }
 }
 
-/// sakht custom cheack box jajaht olawiat bandi task ha
+
+///Creat PriortyCheackbox
 
 class PriorityCheackbox extends StatelessWidget {
   final String labale;

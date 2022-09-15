@@ -11,16 +11,16 @@ import 'package:todo/editTask.dart';
 const taskBoxName = 'tasks';
 
 void main() async {
-  // sakht va register shodn Hive
+  //  register  Hive
   await Hive.initFlutter();
-  // register shodn AdapterTaskHive
+  // register  AdapterTaskHive
   Hive.registerAdapter(TaskAdapter());
-  // register shodn Adapter PriortyHive
+  // register  Adapter PriortyHive
   Hive.registerAdapter(PriorityAdapter());
-  //baz shodn hive box va taghirat dar task ha.............
+  // Creat open box .......
   await Hive.openBox(taskBoxName);
 
-  /// taghir rang StatusBar App
+  // Change color  StatusBar 
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: primaryContiner));
 
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
             labelStyle: TextStyle(color: secondrTextColor),
             iconColor: secondrTextColor,
           ),
-          //them dadn be text ha
+          // Creat themeData
           textTheme: GoogleFonts.poppinsTextTheme(
             const TextTheme(
               headline6: TextStyle(
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
             onSurface: primaryTextColor,
             // this is Color for floatActionButton
             secondary: primaryColor,
-            // this is Color for Text FloatAction button
+            // this is Color for Text FloatActionButton
             onSecondary: Colors.white,
             onPrimary: secondrTextColor,
           )),
@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    /// sakht box va rikhtan an dar motghayer box
+    /// Making a box and putting it in the box variable
     final box = Hive.box(taskBoxName);
     final themeData = Theme.of(context);
     return Scaffold(
@@ -189,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Expanded(
               child: ValueListenableBuilder(
-                // ==============================================>>>>>>>>>>>>>>>> be chi mikhy gosh bdi ta taghit kni
+              
                 valueListenable: box.listenable(),
                 builder: (context, box, child) {
                   final items;
@@ -203,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     return ListView.builder(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
 
-                      /// be eza  value<mghadir> dakhel box ya dataBase
+                      
                       itemCount: items.length + 1,
                       itemBuilder: (context, index) {
                         if (index == 0) {
@@ -234,7 +234,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   textColor: secondrTextColor,
                                   color: const Color(0xffeaeff5),
                                   onPressed: () {
-                                    //======================================>>>>>> paksazi kol box ha
+                                   
                                     box.clear();
                                   },
                                   child: Row(
@@ -250,7 +250,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ],
                           );
                         } else {
-                          /// chon Values Iterable bod bayd az to list estfade konim
+                         
                           final TaskEntity task =
                             items[index - 1];
                           return TaskItem(task: task);
@@ -270,9 +270,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-/// sakht safhe EditTask jajaht Ezafe krdn Task ha be app
 
-/// item haye marbot be task
+
+/// Creat Task items
 class TaskItem extends StatefulWidget {
   const TaskItem({
     Key? key,
@@ -309,7 +309,7 @@ class _TaskItemState extends State<TaskItem> {
         ));
       },
 
-      /// ====================================>>>>>> hazf krdn task ha
+      
       onLongPress: () {
         widget.task.delete();
       },
@@ -329,7 +329,7 @@ class _TaskItemState extends State<TaskItem> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              //====================================================================>>>>>>>>>>>>>>>>>>cheack box custom
+              
               MycheackBox(
                 value: widget.task.isComplet,
                 onTap: () {
@@ -399,7 +399,7 @@ class MycheackBox extends StatelessWidget {
   }
 }
 
-///=============================================================================>>>>Creat Empty State screen
+///Creat Empty State 
 
 class EmpttyState extends StatelessWidget {
   const EmpttyState({super.key});
