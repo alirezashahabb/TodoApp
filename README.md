@@ -1,6 +1,6 @@
 # todo
 
-A new Flutter project.
+Tasks app
 
 ## Getting Started
 
